@@ -928,7 +928,7 @@ defmodule File do
   quotes per single quotes and write each line to a target file
   is shown below:
 
-      source = File.iterator("README.md")
+      {:ok, source} = File.iterator("README.md")
       File.open "NEWREADME.md", [:write], fn(target) ->
         Enum.each source, fn(line) ->
           IO.write target, Regex.replace(%r/"/, line, "'")
