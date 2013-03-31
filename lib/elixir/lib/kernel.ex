@@ -1479,6 +1479,41 @@ defmodule Kernel do
   end
 
   @doc """
+  Defines a mapping.
+
+  This macro defines a module that generates accessors to map from key to some code.
+
+  ## Examples
+
+      defmapping Colors, black: 0, white: 1, blue: 0x12
+
+      Colors.black #=> 0
+      Colors.white #=> 1
+      Colors.blue  #=> 0x12
+
+      Colors.__convert__ 0    #=> :black
+      Colors.__convert__ 1    #=> :white
+      Colors.__convert__ 0x12 #=> :blue
+      Colors.__convert__ 12   #=> nil
+
+      Colors.__convert__ 0, result: :binary #=> "black"
+      Colors.__convert__ 1, result: :binary #=> "white"
+      Colors.__convert__ 0x12, result: :binary #=> "blue"
+      Colors.__convert__ 12, result: :binary #=> nil
+
+  Since __convert__ is essentially a macro. Besides expanding at run time
+  it is possible to do conversion at compile time
+
+  ## Examples
+      Colors.__convert__ 0  inline: true  #=> :black
+      Colors.__convert__ 0, result: :binary, inline: true #=> "black"
+
+  """
+  defmacro defmapping(name, fields, opts // [], do_block // []) do
+    Mapping.defmapping(name, fields, Keyword.merge(opts, do_block))
+  end
+
+  @doc """
   Defines an exception.
 
   Exceptions are simply records and therefore `defexception/4` has
